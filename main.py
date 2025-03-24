@@ -1,11 +1,18 @@
-
-import yt_dlp
 import sys
 from flask import Flask, send_file, render_template_string, request, session, redirect, url_for
 import os
 from datetime import datetime
 import sqlite3
 import secrets
+import yt_dlp
+
+ydl_opts = {
+    'cookiefile': 'cookies.txt',
+}
+
+with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+    ydl.download(['URL'])
+
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
