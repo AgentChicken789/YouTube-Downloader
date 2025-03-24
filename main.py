@@ -38,6 +38,11 @@ def load_admin_password():
 ADMIN_PASSWORD = load_admin_password()  # Passwort aus passwort.txt laden
 
 def get_video_info(url):
+    ydl_opts = {
+        'quiet': True,
+        'no_warnings': True,
+        'cookiefile': 'cookies.txt'  # <--- HIER HINZUFÜGEN
+    }
     with yt_dlp.YoutubeDL() as ydl:
         info = ydl.extract_info(url, download=False)
         return {
@@ -54,6 +59,7 @@ def download_video(url):
             'outtmpl': '%(title)s.%(ext)s',
             'quiet': True,
             'no_warnings': True
+            'cookiefile': 'cookies.txt'
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
