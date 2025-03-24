@@ -6,14 +6,6 @@ import sqlite3
 import secrets
 import yt_dlp
 
-ydl_opts = {
-    'cookiefile': 'cookies.txt',
-}
-
-with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-    ydl.download(['URL'])
-
-
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
@@ -43,7 +35,7 @@ def get_video_info(url):
         'no_warnings': True,
         'cookiefile': 'cookies.txt'  # <--- HIER HINZUFÜGEN
     }
-    with yt_dlp.YoutubeDL() as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
         return {
             'title': info['title'],
@@ -63,7 +55,7 @@ def download_video(url):
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
-            filename = ydl.prepare_filename(info)
+            filename = info.get('requested_downloads', [{}])[0].get('filepath', ydl.prepare_filename(info))
             return filename, info['title']
     except Exception as e:
         print(f"Download error: {str(e)}")
